@@ -2,8 +2,7 @@ body{
   margin:0;
   font-family:Arial;
   background:#111;
-  color: aqua;
-  overflow-x: hidden;
+  color:#fff;
 }
 
 .navbar{
@@ -26,27 +25,16 @@ button{
 
 .section{
   display:none;
-  background: #222;
+  background:#222;
   padding:10px;
   border-radius:10px;
-  overflow-x: auto;
-}
-
-#results{
-  background-color: #222;
-  color: aqua;
-}
-
-#hg #ag{
-  color: aqua;
 }
 
 table{
-  width: 100%;
-  min-width: 400px;
+  width:100%;
   border-collapse:collapse;
-  background: #131637;
-  color: white;
+  background:#fff;
+  color:#000;
 }
 
 th,td{
@@ -55,9 +43,6 @@ th,td{
   text-align:center;
 }
 
-@media (max-width: 600px) {
-  th, td {
-    padding: 4px 2px;
-    font-size: 12""px;
-  }
+.reset{
+  background:red;
 }

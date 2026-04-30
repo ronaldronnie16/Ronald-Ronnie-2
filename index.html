@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DLS League</title>
-<link rel="stylesheet" href="dls.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -27,8 +27,7 @@
 
 <div id="fixtures" class="section">
 <h3>Fixtures</h3>
-
-<select id="weekSelector" onchange="renderAll()"></select>
+<select id="weekSelector"></select>
 <div id="fixturesList"></div>
 </div>
 
@@ -51,10 +50,14 @@
 
 <button onclick="generateFixtures()">Generate Fixtures</button>
 
-<button style="background:red" onclick="resetAll()">RESET ALL</button>
+<button class="reset" onclick="resetAll()">RESET</button>
 </div>
 
 </div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script src="dls.js"></script>
 </body>

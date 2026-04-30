@@ -1,42 +1,63 @@
-document.addEventListener("DOMContentLoaded",()=>{
+// 🔥 PASTE YOUR FIREBASE CONFIG HERE
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 /* ================= STATE ================= */
-let teams = JSON.parse(localStorage.getItem("teams")) || [];
-let fixtures = JSON.parse(localStorage.getItem("fixtures")) || [];
-
-let isAdmin = false;
+let teams = [];
+let fixtures = [];
 let currentWeek = 1;
+let isAdmin = false;
+
+/* ================= LIVE SYNC ================= */
+db.collection("league").doc("data")
+.onSnapshot((doc)=>{
+  if(doc.exists){
+    let data = doc.data();
+    teams = data.teams || [];
+    fixtures = data.fixtures || [];
+    currentWeek = data.currentWeek || 1;
+
+    populateWeeks();
+    renderAll();
+  }
+});
 
 /* ================= SAVE ================= */
 function save(){
-  localStorage.setItem("teams",JSON.stringify(teams));
-  localStorage.setItem("fixtures",JSON.stringify(fixtures));
+  db.collection("league").doc("data").set({
+    teams,
+    fixtures,
+    currentWeek
+  });
 }
 
-/* ================= NAVIGATION ================= */
-window.show = function(id){
+/* ================= NAV ================= */
+function show(id){
   document.querySelectorAll(".section").forEach(s=>s.style.display="none");
   document.getElementById(id).style.display="block";
-
   renderAll();
-};
+}
 
-/* ================= ADMIN LOGIN ================= */
-window.adminLogin = function(){
+/* ================= ADMIN ================= */
+function adminLogin(){
   let pass = prompt("Enter Admin Password");
-
   if(pass === "2024/2026"){
     isAdmin = true;
     show("admin");
   }else{
-    alert("Wrong Password");
+    alert("Wrong password");
   }
-};
+}
 
 /* ================= ADD TEAM ================= */
-window.addTeam = function(){
-
-  if(!isAdmin) return alert("Admin only");
+function addTeam(){
+  if(!isAdmin) return;
 
   if(teams.length >= 20)
     return alert("Max 20 teams");
@@ -47,35 +68,25 @@ window.addTeam = function(){
   teams.push(name);
   document.getElementById("teamName").value="";
   save();
-};
+}
 
-/* ================= FIXTURE GENERATION ================= */
-window.generateFixtures = function(){
+/* ================= FIXTURES ================= */
+function generateFixtures(){
 
   if(!isAdmin) return;
-
   if(teams.length !== 20)
-    return alert("Need exactly 20 teams");
-
-  if(fixtures.length)
-    return alert("Fixtures already generated");
+    return alert("Need 20 teams");
 
   let arr = [...teams];
-  let n = arr.length;
-
-  let rounds = n - 1;
-  let half = n / 2;
-
   let schedule = [];
 
-  for(let r=0;r<rounds;r++){
+  for(let r=0;r<19;r++){
+    let week=[];
 
-    let week = [];
-
-    for(let i=0;i<half;i++){
+    for(let i=0;i<10;i++){
       week.push({
-        home: arr[i],
-        away: arr[n-1-i],
+        home:arr[i],
+        away:arr[19-i],
         hg:null,
         ag:null,
         played:false
@@ -87,7 +98,7 @@ window.generateFixtures = function(){
   }
 
   let second = schedule.map(w=>({
-    week:w.week+rounds,
+    week:w.week+19,
     matches:w.matches.map(m=>({
       home:m.away,
       away:m.home,
@@ -98,20 +109,17 @@ window.generateFixtures = function(){
   }));
 
   fixtures = [...schedule,...second];
-
   currentWeek = 1;
-  populateWeeks();
-  save();
-  renderAll();
-};
 
-/* ================= WEEK SELECTOR ================= */
+  save();
+}
+
+/* ================= WEEK SELECT ================= */
 function populateWeeks(){
   let sel = document.getElementById("weekSelector");
   if(!sel) return;
 
   sel.innerHTML="";
-
   for(let i=1;i<=38;i++){
     sel.innerHTML+=`<option value="${i}">Week ${i}</option>`;
   }
@@ -120,35 +128,14 @@ function populateWeeks(){
 
   sel.onchange = function(){
     currentWeek = +this.value;
-    renderAll();
+    save();
   };
 }
 
-/* ================= AUTO ADVANCE WEEK ================= */
-function checkWeekCompletion(){
-
-  let weekData = fixtures.find(w=>w.week===currentWeek);
-  if(!weekData) return;
-
-  let done = weekData.matches.every(m=>m.played);
-
-  if(done){
-    currentWeek++;
-
-    if(currentWeek > 38){
-      alert("Season Completed!");
-      return;
-    }
-
-    document.getElementById("weekSelector").value = currentWeek;
-    renderAll();
-  }
-}
-
 /* ================= RECORD RESULT ================= */
-window.recordResult = function(){
+function recordResult(){
 
-  if(!isAdmin) return alert("Admin only");
+  if(!isAdmin) return;
 
   let val = document.getElementById("fixtureSelect").value;
   let [w,m] = val.split("-");
@@ -156,136 +143,94 @@ window.recordResult = function(){
   let hg = +document.getElementById("hg").value;
   let ag = +document.getElementById("ag").value;
 
-  fixtures[w].matches[m].hg = hg;
-  fixtures[w].matches[m].ag = ag;
-  fixtures[w].matches[m].played = true;
+  let match = fixtures[w].matches[m];
+  match.hg = hg;
+  match.ag = ag;
+  match.played = true;
 
+  checkWeek();
   save();
+}
 
-  checkWeekCompletion();
-  renderAll();
-};
+/* ================= AUTO WEEK ================= */
+function checkWeek(){
+  let week = fixtures.find(w=>w.week===currentWeek);
+  if(week && week.matches.every(m=>m.played)){
+    currentWeek++;
+  }
+}
 
-/* ================= FIXTURES ================= */
+/* ================= FIXTURES VIEW ================= */
 function renderFixtures(){
+
+  let weekData = fixtures.find(w=>w.week===currentWeek);
+  if(!weekData) return;
 
   let box = document.getElementById("fixturesList");
   let sel = document.getElementById("fixtureSelect");
 
-  let week = currentWeek;
-
   box.innerHTML="";
   sel.innerHTML="";
 
-  let data = fixtures.find(w=>w.week===week);
-  if(!data) return;
-
-  let table = document.createElement("table");
-
-  table.innerHTML=`
-  <tr>
-    <th>Home</th>
-    <th>Away</th>
-    <th>Status</th>
-  </tr>`;
-
-  data.matches.forEach((m,i)=>{
-
-    table.innerHTML+=`
-    <tr>
-      <td>${m.home}</td>
-      <td>${m.away}</td>
-      <td>${m.played ? m.hg+"-"+m.ag : "Pending"}</td>
-    </tr>`;
+  weekData.matches.forEach((m,i)=>{
+    box.innerHTML+=`
+    <p>${m.home} vs ${m.away} (${m.played ? m.hg+"-"+m.ag : "Pending"})</p>`;
 
     if(!m.played){
       sel.innerHTML+=`
-      <option value="${week-1}-${i}">
+      <option value="${currentWeek-1}-${i}">
       ${m.home} vs ${m.away}
       </option>`;
     }
   });
-
-  box.appendChild(table);
 }
 
-/* ================= TABLE ENGINE ================= */
+/* ================= TABLE ================= */
 function renderTable(){
 
-  let t = document.getElementById("leagueTable");
+  let stats={};
 
-  let stats = {};
-
-  teams.forEach(team=>{
-    stats[team] = {
-      name:team,P:0,W:0,D:0,L:0,
-      GF:0,GA:0,GD:0,PTS:0
-    };
+  teams.forEach(t=>{
+    stats[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,PTS:0};
   });
 
   fixtures.forEach(w=>{
     w.matches.forEach(m=>{
       if(!m.played) return;
 
-      let H = stats[m.home];
-      let A = stats[m.away];
+      let H=stats[m.home];
+      let A=stats[m.away];
 
       H.P++; A.P++;
+      H.GF+=m.hg; H.GA+=m.ag;
+      A.GF+=m.ag; A.GA+=m.hg;
 
-      H.GF += m.hg;
-      H.GA += m.ag;
-
-      A.GF += m.ag;
-      A.GA += m.hg;
-
-      if(m.hg > m.ag){
-        H.W++; A.L++; H.PTS+=3;
-      }else if(m.hg < m.ag){
-        A.W++; H.L++; A.PTS+=3;
-      }else{
-        H.D++; A.D++;
-        H.PTS++; A.PTS++;
-      }
+      if(m.hg>m.ag){H.W++;H.PTS+=3;A.L++;}
+      else if(m.hg<m.ag){A.W++;A.PTS+=3;H.L++;}
+      else{H.D++;A.D++;H.PTS++;A.PTS++;}
     });
   });
 
-  Object.values(stats).forEach(t=>{
-    t.GD = t.GF - t.GA;
-  });
+  let sorted = Object.entries(stats)
+  .sort((a,b)=>b[1].PTS-a[1].PTS);
 
-  let sorted = Object.values(stats)
-    .sort((a,b)=>b.PTS-a.PTS||b.GD-a.GD);
+  let table = document.getElementById("leagueTable");
+  table.innerHTML="";
 
-  t.innerHTML=`
-  <tr>
-    <th>Pos</th><th>Team</th>
-    <th>P</th><th>W</th><th>D</th><th>L</th>
-    <th>GF</th><th>GA</th><th>GD</th><th>PTS</th>
-  </tr>`;
-
-  sorted.forEach((x,i)=>{
-    t.innerHTML+=`
+  sorted.forEach(([name,s],i)=>{
+    table.innerHTML+=`
     <tr>
       <td>${i+1}</td>
-      <td>${x.name}</td>
-      <td>${x.P}</td>
-      <td>${x.W}</td>
-      <td>${x.D}</td>
-      <td>${x.L}</td>
-      <td>${x.GF}</td>
-      <td>${x.GA}</td>
-      <td>${x.GD}</td>
-      <td>${x.PTS}</td>
+      <td>${name}</td>
+      <td>${s.P}</td>
+      <td>${s.PTS}</td>
     </tr>`;
   });
 }
 
 /* ================= RESULTS ================= */
 function renderResults(){
-
   let box = document.getElementById("resultsLog");
-  if(!box) return;
-
   box.innerHTML="";
 
   fixtures.forEach(w=>{
@@ -298,30 +243,18 @@ function renderResults(){
   });
 }
 
-/* ================= MASTER RENDER ================= */
-function renderAll(){
-  renderFixtures();
-  renderResults();
-  renderTable();
+/* ================= RESET ================= */
+function resetAll(){
+  if(!isAdmin) return;
+  db.collection("league").doc("data").delete();
 }
 
-/* ================= RESET ================= */
-window.resetAll = function(){
+/* ================= RENDER ================= */
+function renderAll(){
+  renderFixtures();
+  renderTable();
+  renderResults();
+}
 
-  if(!isAdmin) return;
-
-  if(confirm("Delete ALL league data?")){
-
-    localStorage.clear();
-    teams = [];
-    fixtures = [];
-    currentWeek = 1;
-
-    location.reload();
-  }
-};
-
-/* ================= INIT ================= */
-window.show("table");
-
-});
+/* INIT */
+show("table");
