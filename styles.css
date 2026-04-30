@@ -24,7 +24,7 @@ body { font-family: sans-serif; background: var(--bg); color: var(--text); paddi
 
 /* COMPACT TABLE STANDINGS */
 .table-wrapper { overflow-x: auto; background: var(--card); border-radius: 4px; }
-table { width: 100%; min-width: 500px; border-collapse: collapse; }
+table { width: 50%; min-width: 500px; border-collapse: collapse; }
 th, td {
     padding: 6px 2px; text-align: center; font-size: 0.78rem;
     border-bottom: 1px solid #334155;
