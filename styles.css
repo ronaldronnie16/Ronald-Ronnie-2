@@ -1,0 +1,67 @@
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --primary: #3b82f6;
+    --text: #f8fafc;
+    --danger: #ef4444;
+    --success: #22c55e;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { font-family: sans-serif; background: var(--bg); color: var(--text); padding-bottom: 30px; }
+.logo{
+    font-size: 12px;
+}
+
+.navbar {
+    display: flex; justify-content: space-between; padding: 8px 12px;
+    background: var(--card); border-bottom: 1px solid #334155;
+    position: sticky; top: 0; z-index: 100;
+}
+
+.container { width: 100%; max-width: 950px; margin: 0 auto; padding: 10px; }
+
+/* COMPACT TABLE STANDINGS */
+.table-wrapper { overflow-x: auto; background: var(--card); border-radius: 4px; }
+table { width: 100%; min-width: 500px; border-collapse: collapse; }
+th, td {
+    padding: 6px 2px; text-align: center; font-size: 0.78rem;
+    border-bottom: 1px solid #334155;
+}
+th { color: #94a3b8; font-weight: normal; }
+
+.first { color: #fbbf24; }
+.top4 { border-left: 3px solid var(--success); }
+.relegation { border-left: 3px solid var(--danger); }
+
+/* SECTIONS */
+.section { display: none; margin-top: 10px; }
+.active { display: block; }
+.divider { margin: 15px 0; border: 0.5px solid #334155; }
+
+/* MATCH CARDS */
+.match-card {
+    background: var(--card); padding: 8px 12px; margin: 4px 0;
+    border-radius: 4px; display: flex; justify-content: space-between;
+    font-size: 0.85rem; border: 1px solid #334155;
+}
+
+/* ADMIN & INPUTS */
+input, select {
+    background: #0f172a; border: 1px solid #334155; color: white;
+    padding: 10px; border-radius: 4px; width: 100%; margin-bottom: 8px;
+}
+
+.score-container { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 10px 0; }
+.score-container input { width: 50px; text-align: center; }
+
+button {
+    padding: 10px 14px; border: none; border-radius: 4px;
+    background: var(--primary); color: white; font-weight: bold; cursor: pointer;
+}
+
+.btn-danger { background: var(--danger); width: 100%; margin-top: 10px; }
+.btn-warn { background: #f59e0b; width: 100%; }
+
+.hidden { display: none; }

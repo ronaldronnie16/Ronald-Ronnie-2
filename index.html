@@ -1,64 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DLS League</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLS League Standings</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <nav class="navbar">
-  <h2>DLS League</h2>
-  <div>
-    <button onclick="show('table')">Table</button>
-    <button onclick="show('fixtures')">Fixtures</button>
-    <button onclick="show('results')">Results</button>
-    <button onclick="adminLogin()">Admin</button>
-  </div>
+    <div class="logo">DLS LEAGUE</div>
+    <div class="nav-links">
+        <button onclick="show('fixtures')">Fixtures</button>
+        <button onclick="show('results')">Results</button>
+        <button onclick="adminLogin()" class="btn-admin">Admin</button>
+    </div>
 </nav>
 
-<div class="container">
+<main class="container">
+    <div class="dashboard-top">
+        <h2 style="padding:5px 0">Live Standings</h2>
+        <div class="table-wrapper">
+            <table id="leagueTable"></table>
+        </div>
+    </div>
 
-<div id="table" class="section">
-<h3>League Table</h3>
-<table id="leagueTable"></table>
-</div>
+    <hr class="divider">
 
-<div id="fixtures" class="section">
-<h3>Fixtures</h3>
-<select id="weekSelector"></select>
-<div id="fixturesList"></div>
-</div>
+    <div class="dashboard-bottom">
+        <section id="fixtures" class="section active">
+            <select id="weekSelector"></select>
+            <h3 id="weekTitle" style="text-align:center; padding:10px 0"></h3>
+            <div id="fixturesList"></div>
+        </section>
 
-<div id="results" class="section">
-<h3>Results</h3>
+        <section id="results" class="section">
+            <h3>Enter Match Result</h3>
+            <select id="fixtureSelect"></select>
+            <div class="score-container">
+                <input id="hg" type="number" placeholder="H">
+                <span>VS</span>
+                <input id="ag" type="number" placeholder="A">
+            </div>
+            <button onclick="recordResult()" style="width:100%">Save Result</button>
+        </section>
 
-<select id="fixtureSelect"></select>
-<input id="hg" type="number" placeholder="Home Goals">
-<input id="ag" type="number" placeholder="Away Goals">
-<button onclick="recordResult()">Submit Result</button>
+        <section id="admin" class="section">
+            <h3>Admin Panel</h3>
+            <input id="teamName" type="text" placeholder="Team Name">
+            <button onclick="addTeam()" style="width:100%; margin-bottom:10px">Add Team</button>
+            <p style="margin:10px 0">Teams in League: <span id="teamCount">0</span>/20</p>
+            <button onclick="generateFixtures()" class="btn-warn">Generate 38-Week Fixtures</button>
+            <button onclick="resetAll()" class="btn-danger">DELETE ALL DATA</button>
+        </section>
+    </div>
+</main>
 
-<div id="resultsLog"></div>
-</div>
-
-<div id="admin" class="section">
-<h3>Admin Panel</h3>
-
-<input id="teamName" placeholder="Team Name">
-<button onclick="addTeam()">Add Team</button>
-
-<button onclick="generateFixtures()">Generate Fixtures</button>
-
-<button class="reset" onclick="resetAll()">RESET</button>
-</div>
-
-</div>
-
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-<script src="dls.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
