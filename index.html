@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DLS League</title>
+<link rel="stylesheet" href="dls.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <h2>DLS League</h2>
+  <div>
+    <button onclick="show('table')">Table</button>
+    <button onclick="show('fixtures')">Fixtures</button>
+    <button onclick="show('results')">Results</button>
+    <button onclick="adminLogin()">Admin</button>
+  </div>
+</nav>
+
+<div class="container">
+
+<div id="table" class="section">
+<h3>League Table</h3>
+<table id="leagueTable"></table>
+</div>
+
+<div id="fixtures" class="section">
+<h3>Fixtures</h3>
+
+<select id="weekSelector" onchange="renderAll()"></select>
+<div id="fixturesList"></div>
+</div>
+
+<div id="results" class="section">
+<h3>Results</h3>
+
+<select id="fixtureSelect"></select>
+<input id="hg" type="number" placeholder="Home Goals">
+<input id="ag" type="number" placeholder="Away Goals">
+<button onclick="recordResult()">Submit Result</button>
+
+<div id="resultsLog"></div>
+</div>
+
+<div id="admin" class="section">
+<h3>Admin Panel</h3>
+
+<input id="teamName" placeholder="Team Name">
+<button onclick="addTeam()">Add Team</button>
+
+<button onclick="generateFixtures()">Generate Fixtures</button>
+
+<button style="background:red" onclick="resetAll()">RESET ALL</button>
+</div>
+
+</div>
+
+<script src="dls.js"></script>
+</body>
+</html>

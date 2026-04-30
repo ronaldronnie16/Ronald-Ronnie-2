@@ -1,0 +1,53 @@
+body{
+  margin:0;
+  font-family:Arial;
+  background:#111;
+  color: aqua;
+}
+
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  padding:10px;
+  background:#222;
+}
+
+button{
+  margin:3px;
+  padding:7px;
+  background:#1e90ff;
+  border:none;
+  color:#fff;
+  border-radius:5px;
+}
+
+.container{padding:10px;}
+
+.section{
+  display:none;
+  background: #222;
+  padding:10px;
+  border-radius:10px;
+}
+
+#results{
+  background-color: #222;
+  color: aqua;
+}
+
+#hg #ag{
+  color: aqua;
+}
+
+table{
+  width: fit-content;
+  border-collapse:collapse;
+  background: #131637;
+  color: white;
+}
+
+th,td{
+  border:1px solid #ccc;
+  padding:6px;
+  text-align:center;
+}
