@@ -3,6 +3,7 @@ body{
   font-family:Arial;
   background:#111;
   color: aqua;
+  overflow-x: hidden;
 }
 
 .navbar{
@@ -28,6 +29,7 @@ button{
   background: #222;
   padding:10px;
   border-radius:10px;
+  overflow-x: auto;
 }
 
 #results{
@@ -40,7 +42,8 @@ button{
 }
 
 table{
-  width: fit-content;
+  width: 100%;
+  min-width: 400px;
   border-collapse:collapse;
   background: #131637;
   color: white;
@@ -50,4 +53,11 @@ th,td{
   border:1px solid #ccc;
   padding:6px;
   text-align:center;
+}
+
+@media (max-width: 600px) {
+  th, td {
+    padding: 4px 2px;
+    font-size: 12""px;
+  }
 }
