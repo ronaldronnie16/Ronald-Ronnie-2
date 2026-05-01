@@ -12,7 +12,9 @@ body { font-family: system-ui; background: var(--bg); color: var(--text); }
 .navbar { display: flex; justify-content: space-between; padding: 10px; background: var(--card); border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 10; }
 .container { width: 100%; max-width: 900px; margin: 0 auto; padding: 8px; }
 .logo{
-    color: rebeccapurple;
+    color: aqua;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bolder;
 }
 
 /* ADJUST SPACE IN TABLE HERE */
