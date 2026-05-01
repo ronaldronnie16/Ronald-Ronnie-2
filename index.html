@@ -3,59 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DLS League Standings</title>
+    <title>DLS League</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
 <nav class="navbar">
-    <div class="logo">DLS LEAGUE</div>
+    <div class="logo">DLS League</div>
     <div class="nav-links">
         <button onclick="show('fixtures')">Fixtures</button>
         <button onclick="show('results')">Results</button>
         <button onclick="adminLogin()" class="btn-admin">Admin</button>
     </div>
 </nav>
-
 <main class="container">
     <div class="dashboard-top">
-        <h2 style="padding:5px 0">Live Standings</h2>
+        <h2>Live Standings</h2>
         <div class="table-wrapper">
             <table id="leagueTable"></table>
         </div>
     </div>
-
     <hr class="divider">
-
     <div class="dashboard-bottom">
         <section id="fixtures" class="section active">
             <select id="weekSelector"></select>
-            <h3 id="weekTitle" style="text-align:center; padding:10px 0"></h3>
+            <h3 id="weekTitle" style="text-align:center; margin:10px 0"></h3>
             <div id="fixturesList"></div>
         </section>
-
         <section id="results" class="section">
-            <h3>Enter Match Result</h3>
+            <h3>Enter Result</h3>
             <select id="fixtureSelect"></select>
             <div class="score-container">
                 <input id="hg" type="number" placeholder="H">
                 <span>VS</span>
                 <input id="ag" type="number" placeholder="A">
             </div>
-            <button onclick="recordResult()" style="width:100%">Save Result</button>
+            <button onclick="recordResult()" style="width:100%">Save Score</button>
         </section>
-
         <section id="admin" class="section">
             <h3>Admin Panel</h3>
             <input id="teamName" type="text" placeholder="Team Name">
             <button onclick="addTeam()" style="width:100%; margin-bottom:10px">Add Team</button>
-            <p style="margin:10px 0">Teams in League: <span id="teamCount">0</span>/20</p>
-            <button onclick="generateFixtures()" class="btn-warn">Generate 38-Week Fixtures</button>
+            <p>Teams: <span id="teamCount">0</span>/20</p>
+            <button onclick="generateFixtures()" class="btn-warn">Generate Fixtures</button>
             <button onclick="resetAll()" class="btn-danger">DELETE ALL DATA</button>
         </section>
     </div>
 </main>
-
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="script.js"></script>

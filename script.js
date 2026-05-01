@@ -1,4 +1,3 @@
-// --- CONFIG & INIT ---
 const firebaseConfig = {
     apiKey: "AIzaSyAg4ne-ROQxX5ZUHN8_-eZ3ju8nnuwCHzM",
     authDomain: "dls-league.firebaseapp.com",
@@ -13,7 +12,6 @@ const db = firebase.firestore();
 
 let teams = [], fixtures = [], currentWeek = 1, isAdmin = false;
 
-// --- DATA SYNC ---
 db.collection("league").doc("data").onSnapshot(doc => {
     if (doc.exists) {
         const data = doc.data();
@@ -26,7 +24,6 @@ db.collection("league").doc("data").onSnapshot(doc => {
     renderAll();
 });
 
-// --- NAVIGATION & ADMIN ---
 function show(id) {
     document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
@@ -36,21 +33,16 @@ function adminLogin() {
     if (prompt("Password") === "2024/2026") { isAdmin = true; show("admin"); }
 }
 
+async function resetAll() {
+    if (isAdmin && confirm("WARNING: This will permanently delete everything.")) {
+        await db.collection("league").doc("data").delete();
+    }
+}
+
 function save() {
     db.collection("league").doc("data").set({ teams, fixtures, currentWeek });
 }
 
-async function resetAll() {
-    if (!isAdmin) return;
-    if (confirm("Permanently delete all data from the database?")) {
-        try {
-            await db.collection("league").doc("data").delete();
-            alert("Database Reset Complete.");
-        } catch (e) { console.error(e); }
-    }
-}
-
-// --- LOGIC ---
 function addTeam() {
     let n = document.getElementById("teamName").value.trim();
     if (isAdmin && n && teams.length < 20) {
@@ -90,11 +82,9 @@ function recordResult() {
     save();
 }
 
-// --- RENDER (Alphabetical Priority Added) ---
 function renderTable() {
     let s = {};
     teams.forEach(t => s[t] = { P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0 });
-    
     fixtures.forEach(w => w.matches.forEach(m => {
         if (m.played && s[m.home] && s[m.away]) {
             let h = s[m.home], a = s[m.away];
@@ -104,14 +94,8 @@ function renderTable() {
             else { h.D++; a.D++; h.PTS++; a.PTS++; }
         }
     }));
-
     let sorted = Object.entries(s).map(([n, d]) => ({ n, ...d, GD: d.GF - d.GA }))
-        .sort((a, b) => 
-            b.PTS - a.PTS || 
-            b.GD - a.GD || 
-            b.GF - a.GF || 
-            a.n.localeCompare(b.n) // This makes it Alphabetical at the start
-        );
+        .sort((a, b) => b.PTS - a.PTS || b.GD - a.GD || b.GF - a.GF || a.n.localeCompare(b.n));
 
     let h = `<tr><th>#</th><th style="text-align:left">Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>PTS</th></tr>`;
     sorted.forEach((t, i) => {
@@ -133,6 +117,7 @@ function renderFixtures() {
     }
     list.innerHTML = ""; fSel.innerHTML = "";
     if (!fixtures[currentWeek - 1]) return;
+    document.getElementById("weekTitle").innerText = `Week ${currentWeek}`;
     fixtures[currentWeek - 1].matches.forEach((m, i) => {
         list.innerHTML += `<div class="match-card"><span>${m.home}</span> <b>${m.played ? m.hg + '-' + m.ag : 'vs'}</b> <span>${m.away}</span></div>`;
         if (!m.played) fSel.add(new Option(`${m.home} vs ${m.away}`, `${currentWeek - 1}-${i}`));
