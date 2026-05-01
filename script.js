@@ -30,7 +30,9 @@ function show(id) {
 }
 
 function adminLogin() {
-    if (prompt("Password") === "2024/2026") { isAdmin = true; show("admin"); }
+    if (prompt("Password") === "2024/2026/dls.league") { isAdmin = true; show("admin"); }else{
+        alert('Wrong Password Entered/Not Admin');
+    }
 }
 
 async function resetAll() {
