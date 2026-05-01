@@ -3,18 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DLS League</title>
+    <title>DLS Elite League 2026</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<header class="main-header">
+    <div class="brand-container">
+        <img src="dlslogo.jpeg" alt="DLS Logo" class="league-logo"> 
+        <div class="logo-text">DLS ELITE <br>LEAGUE 2026</div>
+    </div>
+</header>
+
 <nav class="navbar">
-    <div class="logo">DLS ELITE <br>LEAGUE 2026</div>
     <div class="nav-links">
         <button onclick="show('fixtures')">Fixtures</button>
+        <button onclick="show('standings-tab')">Tables</button>
         <button onclick="show('results')">Results</button>
         <button onclick="adminLogin()" class="btn-admin">Admin</button>
     </div>
 </nav>
+
 <main class="container">
     <div class="dashboard-top">
         <h2>Live Standings</h2>
@@ -22,26 +31,61 @@
             <table id="leagueTable"></table>
         </div>
     </div>
+
     <hr class="divider">
+
     <div class="dashboard-bottom">
+        <section id="standings-tab" class="section">
+            <div class="stats-grid">
+                <div>
+                    <h3 class="stat-title">Most Goals (Team)</h3>
+                    <div class="table-wrapper">
+                        <table id="goalsTable"></table>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="stat-title">Clean Sheets</h3>
+                    <div class="table-wrapper">
+                        <table id="cleanSheetsTable"></table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend-box">
+                <h4>Table Legend</h4>
+                <div class="legend-content">
+                    <span><b>P:</b> Played</span>
+                    <span><b>W:</b> Won</span>
+                    <span><b>D:</b> Draw</span>
+                    <span><b>L:</b> Loss</span>
+                    <span><b>GF:</b> Goals For</span>
+                    <span><b>GA:</b> Goals Against</span>
+                    <span><b>GD:</b> Goal Difference</span>
+                    <span><b>PTS:</b> Points</span>
+                </div>
+            </div>
+        </section>
+
         <section id="fixtures" class="section active">
-            <select id="weekSelector"></select>
+            <select id="weekSelector" class="form-input"></select>
             <h3 id="weekTitle" style="text-align:center; margin:10px 0"></h3>
             <div id="fixturesList"></div>
         </section>
+
         <section id="results" class="section">
             <h3>Enter Result</h3>
-            <select id="fixtureSelect"></select>
+            <select id="fixtureSelect" class="form-input"></select>
             <div class="score-container">
-                <input id="hg" type="number" placeholder="H">
-                <span>VS</span>
-                <input id="ag" type="number" placeholder="A">
+                <input id="hg" type="number" placeholder="H" class="form-input score-input">
+                <span style="font-weight: bold;">VS</span>
+                <input id="ag" type="number" placeholder="A" class="form-input score-input">
             </div>
             <button onclick="recordResult()" style="width:100%">Save Score</button>
         </section>
+
         <section id="admin" class="section">
             <h3>Admin Panel</h3>
-            <input id="teamName" type="text" placeholder="Team Name">
+            <input id="teamName" type="text" placeholder="Team Name" class="form-input">
             <button onclick="addTeam()" style="width:100%; margin-bottom:10px">Add Team</button>
             <p>Teams: <span id="teamCount">0</span>/20</p>
             <button onclick="generateFixtures()" class="btn-warn">Generate Fixtures</button>
@@ -49,6 +93,7 @@
         </section>
     </div>
 </main>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="script.js"></script>
