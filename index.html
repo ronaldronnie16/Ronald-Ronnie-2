@@ -17,10 +17,10 @@
 
 <nav class="navbar">
     <div class="nav-links">
-        <button onclick="show('fixtures')">Fixtures</button>
-        <button onclick="show('standings-tab')">Tables</button>
-        <button onclick="show('results')">Results</button>
-        <button onclick="adminLogin()" class="btn-admin">Admin</button>
+        <button onclick="show('fixtures')" id="nav-fixtures">Fixtures</button>
+        <button onclick="show('standings-tab')" id="nav-tables">Tables</button>
+        <button onclick="show('results')" id="nav-results">Results</button>
+        <button onclick="show('admin')" id="nav-admin" class="btn-admin">Admin</button>
     </div>
 </nav>
 
@@ -34,64 +34,66 @@
 
     <hr class="divider">
 
-    <div class="dashboard-bottom">
-        <section id="standings-tab" class="section">
-            <div class="stats-grid">
-                <div>
-                    <h3 class="stat-title">Most Goals (Team)</h3>
-                    <div class="table-wrapper">
-                        <table id="goalsTable"></table>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="stat-title">Clean Sheets</h3>
-                    <div class="table-wrapper">
-                        <table id="cleanSheetsTable"></table>
-                    </div>
-                </div>
+    <section id="standings-tab" class="section">
+        <div class="stats-grid">
+            <div>
+                <h3 class="stat-title">Most Goals</h3>
+                <div class="table-wrapper"><table id="goalsTable"></table></div>
             </div>
-
-            <div class="legend-box">
-                <h4>Table Legend</h4>
-                <div class="legend-content">
-                    <span><b>P:</b> Played</span>
-                    <span><b>W:</b> Won</span>
-                    <span><b>D:</b> Draw</span>
-                    <span><b>L:</b> Loss</span>
-                    <span><b>GF:</b> Goals For</span>
-                    <span><b>GA:</b> Goals Against</span>
-                    <span><b>GD:</b> Goal Difference</span>
-                    <span><b>PTS:</b> Points</span>
-                </div>
+            <div>
+                <h3 class="stat-title">Clean Sheets</h3>
+                <div class="table-wrapper"><table id="cleanSheetsTable"></table></div>
             </div>
-        </section>
+        </div>
+        <div class="legend-box">
+            <h4>Legend</h4>
+            <div class="legend-content">
+                <span><b>P:</b> Played</span><span><b>W:</b> Won</span><span><b>D:</b> Draw</span><span><b>L:</b> Loss</span>
+                <span><b>GF:</b> Goals</span><span><b>GA:</b> Against</span><span><b>GD:</b> Diff</span><span><b>PTS:</b> Pts</span>
+            </div>
+        </div>
+    </section>
 
-        <section id="fixtures" class="section active">
-            <select id="weekSelector" class="form-input"></select>
-            <h3 id="weekTitle" style="text-align:center; margin:10px 0"></h3>
-            <div id="fixturesList"></div>
-        </section>
+    <section id="fixtures" class="section active">
+        <h3 id="currentWeekTitle" style="text-align:center; color:var(--accent);">Week 1</h3>
+        <div id="activeFixturesList"></div>
+        
+        <div id="postponedSection" class="hidden">
+            <h3 style="text-align:center; color:var(--danger); margin-top:20px;">Postponed Matches</h3>
+            <div id="postponedList"></div>
+        </div>
+    </section>
 
-        <section id="results" class="section">
-            <h3>Enter Result</h3>
+    <section id="results" class="section">
+        <h3 style="text-align:center; margin-bottom:10px;">Match History</h3>
+        <div id="completedResultsList"></div>
+    </section>
+
+    <section id="admin" class="section">
+        <div id="adminLoginArea">
+            <button onclick="adminLogin()" style="width:100%">Login to Admin Panel</button>
+        </div>
+
+        <div id="adminPanel" class="hidden">
+            <h3>Admin: Result Entry</h3>
             <select id="fixtureSelect" class="form-input"></select>
             <div class="score-container">
-                <input id="hg" type="number" placeholder="H" class="form-input score-input">
-                <span style="font-weight: bold;">VS</span>
-                <input id="ag" type="number" placeholder="A" class="form-input score-input">
+                <input id="hg" type="text" placeholder="H Score" class="form-input score-input">
+                <span>VS</span>
+                <input id="ag" type="text" placeholder="A Score" class="form-input score-input">
             </div>
-            <button onclick="recordResult()" style="width:100%">Save Score</button>
-        </section>
-
-        <section id="admin" class="section">
-            <h3>Admin Panel</h3>
-            <input id="teamName" type="text" placeholder="Team Name" class="form-input">
+            <p style="font-size: 0.7rem; color: #94a3b8; text-align: center; margin-bottom: 5px;">Type "N/A" in scores to postpone</p>
+            <button onclick="recordResult()" style="width:100%; background:var(--success)">Save Result</button>
+            
+            <hr class="divider">
+            
+            <h3>League Management</h3>
+            <input id="teamName" type="text" placeholder="New Team Name" class="form-input">
             <button onclick="addTeam()" style="width:100%; margin-bottom:10px">Add Team</button>
-            <p>Teams: <span id="teamCount">0</span>/20</p>
-            <button onclick="generateFixtures()" class="btn-warn">Generate Fixtures</button>
-            <button onclick="resetAll()" class="btn-danger">DELETE ALL DATA</button>
-        </section>
-    </div>
+            <button onclick="generateFixtures()" class="btn-warn">Generate Schedule</button>
+            <button onclick="resetAll()" class="btn-danger">RESET LEAGUE</button>
+        </div>
+    </section>
 </main>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
